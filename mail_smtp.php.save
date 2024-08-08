@@ -1,0 +1,39 @@
+<?php
+// Include the PHPMailer library
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Load Composer's autoloader
+require 'vendor/autoload.php';
+
+// Load the .env file
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// Create a new PHPMailer instance
+$mail = new PHPMailer(true);
+
+try {
+    
+    $mail->isSMTP();                                           
+    $mail->Host       = $_ENV['SMTP_HOST'];                    
+    $mail->SMTPAuth   = true;                                  
+    $mail->Username   = $_ENV['SMTP_USERNAME'];                
+    $mail->Password   = $_ENV['SMTP_PASSWORD'];                
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;        
+    $mail->Port       = $_ENV['SMTP_PORT'];                    
+
+    $mail->setFrom('brad@noreply.mam-laka.com', 'Mailer');     
+    $mail->addAddress('brian@noreply.mam-laka.com', 'Brian');  
+
+    
+    $mail->isHTML(true);                                       
+    $mail->Subject = 'Hello Yobus';
+    $mail->Body    = 'Testing some Mailgun awesomeness!';
+    $mail->AltBody = 'Testing some Mailgun awesomeness!';      
+
+    $mail->send();
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}
